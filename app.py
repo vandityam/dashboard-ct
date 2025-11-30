@@ -6,7 +6,7 @@ import plotly.express as px
 # =============================================================================
 # KONFIGURASI DASHBOARD
 # =============================================================================
-st.set_page_config(page_title="Bebras CT Dashboard", layout="wide")
+st.set_page_config(page_title="Dashboard Bebras Challenge", layout="wide")
 
 
 with open("style.css") as f:
