@@ -109,6 +109,28 @@ if kelas:
 
 st.sidebar.write(f"Total data: **{len(filtered)} peserta**")
 
+#=============================================================================
+# INFORMASI FILTER AKTIF
+#=============================================================================
+active_filters = []
+
+if provinsi:
+    active_filters.append("Provinsi " + ", ".join(map(str, provinsi)))
+
+if kota:
+    active_filters.append("Kota/Kabupaten " + ", ".join(map(str, kota)))
+
+if kategori:
+    active_filters.append("Kategori " + ", ".join(map(str, kategori)))
+
+if kelas:
+    active_filters.append("Kelas " + ", ".join(map(str, kelas)))
+
+if active_filters:
+    st.info("Data ditampilkan untuk " + " | ".join(active_filters))
+else:
+    st.info("Menampilkan seluruh data.")
+
 # =============================================================================
 # 1️⃣ STATISTIK RINGKAS
 # =============================================================================
@@ -320,53 +342,78 @@ with tab3:
     )
     st.plotly_chart(fig_prov_score, use_container_width=True)
 
-
-# =============================================================================
-# 4️⃣ HUBUNGAN NILAI & DURASI
-# =============================================================================
+# ---------------------------------------------------------
+# RATA-RATA NILAI PER SEKOLAH
+# ---------------------------------------------------------
 st.markdown(
     """
     <div style="padding:4px 12px; background-color:#f8f9fa; border-radius:15px; margin-top:15px">
-        <h3>⏱️ Hubungan Nilai dan Durasi Tes</h3>
+        <h3>🏫 Rata-rata Nilai per Sekolah</h3>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-if "Durasi_min" in filtered.columns:
-    
-    # Scatter plot
-    fig_corr = px.scatter(
-        filtered,
-        x="Durasi_min",
-        y="Nilai",
-        trendline="ols",
-        title="Korelasi Durasi Pengerjaan dan Nilai Peserta",
-        labels={"Durasi_min": "Durasi (menit)", "Nilai": "Nilai"}
+df_school = (
+    filtered.groupby("SekolahNama")["Nilai"]
+    .mean()
+    .reset_index()
+    .sort_values("Nilai", ascending=False)
+)
+
+top_n = st.slider("Tampilkan Top-N Sekolah", 5, 30, 10)
+
+fig_school = px.bar(
+    df_school.head(top_n),
+    x="Nilai",
+    y="SekolahNama",
+    orientation="h",
+    title=f"Top {top_n} Sekolah Berdasarkan Rata-rata Nilai",
+)
+st.plotly_chart(fig_school, use_container_width=True)
+
+# ---------------------------------------------------------
+# PEMETAAN KEKUATAN & KELEMAHAN PESERTA — KATEGORI SOAL
+# ---------------------------------------------------------
+st.markdown(
+    """
+    <div style="padding:4px 12px; background-color:#f8f9fa; border-radius:15px; margin-top:15px">
+        <h3>🎯 Kekuatan & Kelemahan Berdasarkan Kategori Soal</h3>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+kategori_cols = [c for c in filtered.columns if c.startswith("S ") or c.startswith("S_")]
+
+if len(kategori_cols) > 0:
+    df_kat = filtered[kategori_cols].mean().reset_index()
+    df_kat.columns = ["Kategori", "RataRata"]
+
+    fig_kat = px.bar(
+        df_kat,
+        x="Kategori",
+        y="RataRata",
+        title="Rata-rata Nilai per Kategori Soal",
     )
-    st.plotly_chart(fig_corr, use_container_width=True)
+    st.plotly_chart(fig_kat, use_container_width=True)
 
-    # Hitung korelasi
-    corr_value = filtered["Durasi_min"].corr(filtered["Nilai"])
-    
-    # Interpretasi otomatis
-    if corr_value > 0.3:
-        relation = "cukup kuat (positif)"
-    elif corr_value > 0:
-        relation = "lemah (positif)"
-    elif corr_value < -0.3:
-        relation = "cukup kuat (negatif)"
-    else:
-        relation = "lemah (negatif)"
+    # Insight otomatis
+    kat_tertinggi = df_kat.sort_values("RataRata", ascending=False).iloc[0]
+    kat_terendah = df_kat.sort_values("RataRata", ascending=True).iloc[0]
 
-    st.info(
-        f"📌 **Nilai korelasi:** {corr_value:.3f}\n\n"
-        f"Artinya hubungan antara durasi dan nilai tergolong **{relation}**."
+    st.success(
+        f"""
+        **Kekuatan terbesar peserta:**  
+        🟩 *{kat_tertinggi['Kategori']}* — {kat_tertinggi['RataRata']:.2f}
+
+        **Kelemahan terbesar peserta:**  
+        🟥 *{kat_terendah['Kategori']}* — {kat_terendah['RataRata']:.2f}
+        """
     )
 
 else:
-    st.warning("Kolom Durasi_min tidak tersedia di dataset.")
-
+    st.warning("Kolom kategori soal tidak ditemukan (S_1, S_2, dst).")
 
 # =============================================================================
 # 5️⃣ TABEL DATA

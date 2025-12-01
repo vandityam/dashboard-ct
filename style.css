@@ -5,6 +5,7 @@ html,
 body,
 [class*="css"] {
     font-family: 'Poppins', sans-serif !important;
+    background: linear-gradient(180deg, #f3f3f4 0%, #ffffff 40%, #ffffff 100%) !important;
 }
 
 /* ====== GLOBAL LAYOUT ====== */
@@ -29,7 +30,7 @@ body,
     margin-bottom: 10px;
     padding: 10px 18px;
     background: #f5f5f7;
-    border-radius: 16px;
+    border-radius: 15px;
     color: #333;
 }
 
@@ -77,5 +78,25 @@ body,
 .stTabs [aria-selected="true"] {
     color: #000 !important;
     font-weight: 600 !important;
+    background-color: transparent !important;
+}
+
+/* ====== CHART CARD WRAPPER ====== */
+.chart-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+
+    /* Drop shadow lembut */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+}
+
+/* Hilangkan background default Plotly */
+.js-plotly-plot,
+.plotly,
+.stPlotlyChart {
     background-color: transparent !important;
 }
