@@ -126,8 +126,8 @@ with col1:
     )
 
     fig_gender.update_layout(
-        height=260,   # kecil
-        width=260,    # kecil
+        height=300,   
+        width=260,    
         margin=dict(l=20, r=20, t=40, b=20),
     )
 
@@ -145,8 +145,9 @@ with col2:
     )
 
     fig_kelas.update_layout(
-        height=260,
-        margin=dict(l=10, r=10, t=40, b=10),
+        height=300,   
+        width=260,    
+        margin=dict(l=20, r=20, t=40, b=20),
     )
 
     st.plotly_chart(fig_kelas, use_container_width=True)
