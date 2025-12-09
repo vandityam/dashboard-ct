@@ -126,9 +126,9 @@ with col1:
     )
 
     fig_gender.update_layout(
-        height=200,   
-        width=260,    
-        margin=dict(l=20, r=20, t=40, b=20),
+        height=250,   
+        width=250,    
+        margin=dict(l=20, r=20, t=30, b=20),
     )
 
     st.plotly_chart(fig_gender, use_container_width=True)
@@ -145,9 +145,9 @@ with col2:
     )
 
     fig_kelas.update_layout(
-        height=200,   
-        width=260,    
-        margin=dict(l=20, r=20, t=40, b=20),
+        height=250,   
+        width=250,    
+        margin=dict(l=10, r=10, t=40, b=10),
     )
 
     st.plotly_chart(fig_kelas, use_container_width=True)
