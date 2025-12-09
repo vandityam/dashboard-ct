@@ -126,7 +126,7 @@ with col1:
     )
 
     fig_gender.update_layout(
-        height=300,   
+        height=200,   
         width=260,    
         margin=dict(l=20, r=20, t=40, b=20),
     )
@@ -145,7 +145,7 @@ with col2:
     )
 
     fig_kelas.update_layout(
-        height=300,   
+        height=200,   
         width=260,    
         margin=dict(l=20, r=20, t=40, b=20),
     )
